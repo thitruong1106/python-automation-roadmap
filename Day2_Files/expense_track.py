@@ -1,7 +1,7 @@
 import csv
 from pathlib import Path
 
-CSV_PATH = Path("expense_tracker.csv")
+CSV_PATH = Path("expense_tracker.csv") #declare path for file 
 
 def ensure_csv_with_header():
     if not CSV_PATH.exists():
@@ -53,12 +53,11 @@ def view_report():
         header = next(reader, None)  # skip header if present
         for row in reader:
             if len(row) < 2:
-                continue  # skip malformed rows
+                continue 
             product = row[0].strip()
             try:
                 cost = float(row[1])
             except ValueError:
-                # skip rows with non-numeric cost (from old runs/typos)
                 continue
             total += cost
             count += 1
