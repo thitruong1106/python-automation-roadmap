@@ -2,9 +2,7 @@
 Discord test of webhook
 Warm-up
 
-Create a small function that sends a message to a Discord webhook (or Telegram bot).
-
-Example: "Hello from Python!"
+Create a small function that sends a message to a Discord webhook
 """
 
 from dotenv import load_dotenv
@@ -27,4 +25,4 @@ def discord_send(content: str, webhook: str, timeout: int = 10):
     if resp.status_code not in (200, 204):
         raise RuntimeError(f"Discord error {resp.status_code}: {resp.text}")
 
-discord_send("hello", WEBHOOK)
+discord_send("hello, i sent a message using python and visual studio", WEBHOOK)
