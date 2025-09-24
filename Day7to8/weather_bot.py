@@ -21,6 +21,7 @@ from datetime import datetime
 #load api keys 
 load_dotenv()
 API_KEY = os.getenv("openweatherapi")
+WEBHOOK = os.getenv("discord_visual_hook")
 
 #write header to file once 
 def ensure_header(path, header): 
@@ -51,7 +52,19 @@ def log_row(path, ts, city, temp, humidity, desc):
 
     #run for 30 minutes, 1800, with 10 minutes cool down or 600 seconds 
 
-def main(city="Sydney", cooldown=600, duration=1800, csv_path="python_roadmap/Day7_API/weather_log.csv"):
+def discord_send(content:str, webhook:str, timeout: int = 10):
+    if not webhook:
+        raise ValueError("Missing discord webhook url")
+    r = requests.post(
+        webhook,
+        json={"content": content},
+        timeout = timeout
+    )
+    #Discord return 204 no content on success 
+    if r.status_code not in (200,204):
+        raise RuntimeError(f"Discord error {r.status_code}: {r.text}" )
+    
+def main(city="Sydney", cooldown=600, duration=1800, csv_path="python_roadmap/Day7to8//weather_log.csv"):
     #log header to csv path 
     ensure_header(csv_path, ["timestamp", "city", "temp_c", "humidity", "description"])
     # run loop with cooldown, fetch weather, log, and print
@@ -65,10 +78,14 @@ def main(city="Sydney", cooldown=600, duration=1800, csv_path="python_roadmap/Da
             #print to terminal 
             print(f"{ts} | {city} | {temp:.1f}°C | {humidity}% | {desc}")
             if "rain" in desc.lower():
-                print("Bring umbrella ☔")
+                print("☔ Bring umbrella")
+                discord_send(f"**Umbrella alert**: Rain expected in {city}", WEBHOOK)
+            elif "scattered clouds" in desc.lower():
+                discord_send(f"🧣 clouds are scatter", WEBHOOK)
             #log to csv 
             log_row(csv_path, ts, city, temp, humidity, desc)
             last = now
         time.sleep(1)
+
 if __name__ == "__main__":
     main()
