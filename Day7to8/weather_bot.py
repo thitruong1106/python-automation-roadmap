@@ -60,10 +60,17 @@ def discord_send(content:str, webhook:str, timeout: int = 10):
         json={"content": content},
         timeout = timeout
     )
-    #Discord return 204 no content on success 
+    #If status code is not 200, or 204) error is raise. 
     if r.status_code not in (200,204):
         raise RuntimeError(f"Discord error {r.status_code}: {r.text}" )
-    
+
+#sending message, in discord and terminal. 
+def send_alert(msg, use_console = True, use_discord = False):
+    if use_console:
+        print(f"[ALERT] {msg}")
+    if use_discord:
+        discord_send(msg, WEBHOOK)
+
 def main(city="Sydney", cooldown=600, duration=1800, csv_path="python_roadmap/Day7to8//weather_log.csv"):
     #log header to csv path 
     ensure_header(csv_path, ["timestamp", "city", "temp_c", "humidity", "description"])
@@ -78,10 +85,11 @@ def main(city="Sydney", cooldown=600, duration=1800, csv_path="python_roadmap/Da
             #print to terminal 
             print(f"{ts} | {city} | {temp:.1f}°C | {humidity}% | {desc}")
             if "rain" in desc.lower():
-                print("☔ Bring umbrella")
-                discord_send(f"**Umbrella alert**: Rain expected in {city}", WEBHOOK)
+                send_alert("☔** Bring Umbrella \n Its raining in {city}", use_console=True, use_discord=True) #overwrite default values. Send in both discord and console 
             elif "scattered clouds" in desc.lower():
-                discord_send(f"🧣 clouds are scatter", WEBHOOK)
+                send_alert("** Clouds are scatted ☁️", use_console=True, use_discord=True)
+            elif "overcast cloud" in desc.lower():
+                send_alert("☁️⛅ **overcast cloud** \n A bit cold", use_console=True, use_discord=True)
             #log to csv 
             log_row(csv_path, ts, city, temp, humidity, desc)
             last = now
