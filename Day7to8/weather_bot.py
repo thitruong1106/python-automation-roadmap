@@ -84,7 +84,10 @@ def main(city="Sydney", cooldown=600, duration=1800, csv_path="python_roadmap/Da
             ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             #print to terminal 
             print(f"{ts} | {city} | {temp:.1f}°C | {humidity}% | {desc}")
-            if "rain" in desc.lower():
+            #Rain category 
+            RAINY = ("rain", "drizzle", "thunderstorm")
+            
+            if any(rainDesc in desc.lower() for rainDesc in RAINY):
                 send_alert("☔** Bring Umbrella \n Its raining in {city}", use_console=True, use_discord=True) #overwrite default values. Send in both discord and console 
             elif "scattered clouds" in desc.lower():
                 send_alert("** Clouds are scatted ☁️", use_console=True, use_discord=True)

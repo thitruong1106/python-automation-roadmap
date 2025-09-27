@@ -7,3 +7,6 @@ timestamp,city,temp_c,humidity,description
 2025-09-24 22:17:08,Sydney,14.82,56,scattered clouds
 2025-09-24 22:17:38,Sydney,14.82,56,scattered clouds
 2025-09-24 22:21:07,Sydney,14.82,56,scattered clouds
+2025-09-26 13:53:23,Sydney,27.16,23,overcast clouds
+2025-09-26 13:53:46,Sydney,27.16,23,overcast clouds
+2025-09-27 10:13:09,Sydney,24.77,54,overcast clouds
