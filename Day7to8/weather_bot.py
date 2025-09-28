@@ -71,7 +71,16 @@ def send_alert(msg, use_console = True, use_discord = False):
     if use_discord:
         discord_send(msg, WEBHOOK)
 
-def main(city="Sydney", cooldown=600, duration=1800, csv_path="python_roadmap/Day7to8//weather_log.csv"):
+def format_weather_alert(city, temp, status, ts):
+    return (
+        f"**Weather Alert**\n"
+        f"City: {city}\n"
+        f"Temp: {temp:.1f}°C\n"      # 1 decimal place
+        f"Status: {status}\n"
+        f"Time: {ts}"
+    )
+
+def main(city="Sydney", cooldown=600, duration=1800, csv_path="logging.csv"):
     #log header to csv path 
     ensure_header(csv_path, ["timestamp", "city", "temp_c", "humidity", "description"])
     # run loop with cooldown, fetch weather, log, and print
@@ -84,15 +93,17 @@ def main(city="Sydney", cooldown=600, duration=1800, csv_path="python_roadmap/Da
             ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             #print to terminal 
             print(f"{ts} | {city} | {temp:.1f}°C | {humidity}% | {desc}")
+            msg = format_weather_alert(city, temp, desc, ts)
+
             #Rain category 
             RAINY = ("rain", "drizzle", "thunderstorm")
             
             if any(rainDesc in desc.lower() for rainDesc in RAINY):
-                send_alert("☔** Bring Umbrella \n Its raining in {city}", use_console=True, use_discord=True) #overwrite default values. Send in both discord and console 
+                send_alert(f"☔** Bring Umbrella \n Its raining in {msg}",True,True) #overwrite default values. Send in both discord and console 
             elif "scattered clouds" in desc.lower():
-                send_alert("** Clouds are scatted ☁️", use_console=True, use_discord=True)
+                send_alert(f"** Clouds are scatted ☁️{msg}", True,True)
             elif "overcast cloud" in desc.lower():
-                send_alert("☁️⛅ **overcast cloud** \n A bit cold", use_console=True, use_discord=True)
+                send_alert(f"☁️⛅ **overcast cloud** \n A bit cold{msg}", True, True)
             #log to csv 
             log_row(csv_path, ts, city, temp, humidity, desc)
             last = now
