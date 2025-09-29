@@ -66,6 +66,15 @@ def send_alert(msg, use_console=True, use_discord=False): #by defualt send messa
     if use_discord:
         send_discord(msg, WEBHOOK)
 
+def safe_fetch_price(symbol):
+    try:
+        price = fetch_price("BTC")
+        logging.info(f"Successfully fetched {symbol}: {price}")
+        return price
+    except Exception as e:
+        logging.error(f"Failed to fetch {symbol}: {e}")
+        return None
+
 def main(duration=60,cooldown=10):
     end = time.monotonic() + duration #run for duration time 
     last_btc_alert = 0.0
@@ -85,8 +94,8 @@ def main(duration=60,cooldown=10):
             btc_price = fetch_price("BTC")
             logging.info(f"BTC price: ${btc_price:,.2f}")
             now = time.monotonic()
-            if btc_price <60000 and (now - last_btc_alert) >= btc_alert_cooldown:
-                send_alert(f"🚨 BTC dropped: ${btc_price:,.2f}", True, True)
+            if btc_price <= 60000 and (now - last_btc_alert) >= btc_alert_cooldown:
+                send_alert(f"🚨 BTC: ${btc_price:,.2f}", True, True)
                 last_btc_alert = now
         except Exception as e:
             logging.error(f"Failed to fetch BTC {e}")
@@ -94,3 +103,4 @@ def main(duration=60,cooldown=10):
 
 if __name__ == "__main__":
     main()
+
