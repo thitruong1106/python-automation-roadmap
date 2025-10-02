@@ -1,0 +1,23 @@
+[
+    {
+        "name": "Chrizard",
+        "set": "base set",
+        "rarity": "reverse holo",
+        "valued_usd": 350,
+        "graded": true
+    },
+    {
+        "name": "Piplup",
+        "set": "base set",
+        "rarity": "reverse holo",
+        "valued_usd": 350,
+        "graded": false
+    },
+    {
+        "name": "Snorlax",
+        "set": "base set",
+        "rarity": "SIR",
+        "valued_usd": 400,
+        "graded": false
+    }
+]
